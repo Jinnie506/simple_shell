@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 		if (isatty(fileno(stdin)))
 		{
 			isPipe = 1;
-			_puts("user@dexter$ ");
+			_puts("$ ");
 		}
 		character = getline(&buffer, &bufsize, stdin);
 		if (character == EOF)
