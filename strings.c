@@ -109,7 +109,7 @@ char *_strtok(char *s, char d)
 
 	if (input == NULL)
 		return (NULL);
-	result = (char *)malloc(sizeof(_strlen(input) + 1));
+	result = (char *)malloc(sizeof(char *) * BUFSIZ);
 
 	for (; input[i] != '\0'; i++)
 	{
