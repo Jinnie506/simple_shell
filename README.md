@@ -24,6 +24,7 @@ Standard functions and system calls employed in simple_shell include:
 * [simple_shell.c](simple_shell.c) - essential functions to the shell
 * [strings.c](string.c) - functions related to string manipulation
 * [_puts.c](_puts.c) - function that writes a string to standard output
+* [get_env.c](get_env.c) - function that gets the environmental variable path
 
 ## Requirements
 
