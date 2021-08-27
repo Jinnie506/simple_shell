@@ -26,6 +26,7 @@ int execute(char **cmd, char *main_path)
 			if (execve(*(cmd + 0), cmd, environ) == -1)
 			{
 				perror("./shell");
+				exit(1);
 			}
 		}
 		else
@@ -36,6 +37,7 @@ int execute(char **cmd, char *main_path)
 			if (execve(main_path, cmd, environ) == -1)
 			{
 				perror("./shell");
+				exit(1);
 			}
 		}
 	}
@@ -55,12 +57,12 @@ char *get_path(char *path)
 	char *main_path;
 	char *cutpath;
 
-	cutpath = _strtok(path, ':');
+	cutpath = strtok(path, ":");
 	while (cutpath != NULL)
 	{
 		if (!_strcmp(cutpath, "/usr/bin"))
 			main_path = cutpath;
-		cutpath = _strtok(NULL, ':');
+		cutpath = strtok(NULL, ":");
 	}
 	return (main_path);
 }
@@ -73,7 +75,7 @@ char *get_path(char *path)
  * Return: Always 0, -1 on error.
  */
 
-int main(int argc, char **argv)
+int main(int argc __attribute__((unused)), char **argv __attribute__((unused)))
 {
 	int response, character, isPipe = 0;
 	size_t bufsize = BUFSIZ;
@@ -81,19 +83,10 @@ int main(int argc, char **argv)
 	char *buffer, *path;
 	char *main_path = (char *)malloc(sizeof(char *) * bufsize);
 
-	if (argc >= 2)
-	{
-		if (execve(argv[1], argv, NULL) == -1)
-		{
-			exit(-1);
-		}
-		return (0);
-	}
-	buffer = (char *)malloc(bufsize * sizeof(char));
+	buffer = (char *)malloc(sizeof(char *) * bufsize);
 	if (buffer == NULL)
 	{
 		perror("Unable to allocate buffer");
-		exit(1);
 	}
 	path = _getenv("PATH", environ);
 	main_path = get_path(path);
@@ -101,17 +94,24 @@ int main(int argc, char **argv)
 		if (isatty(fileno(stdin)))
 		{
 			isPipe = 1;
-			_puts("$ ");
+			_puts("user@dexter$ ");
 		}
 		character = getline(&buffer, &bufsize, stdin);
-		if (character == EOF)
-			exit(1);
 		buffer[_strlen(buffer) - 1] = '\0';
-		if (!_strcmp("exit", buffer))
+		if (!_strcmp("exit", buffer) || character == EOF)
+		{
+			free(buffer);
+			free(tokens);
 			exit(1);
+		}
 		tokens = stringToTokens(buffer);
 		response = execute(tokens, main_path);
 	} while (isPipe && response != -1);
+	if (isPipe && response == -1)
+	{
+		free(buffer);
+		free(main_path);
+	}
 	free(buffer);
 	free(tokens);
 	return (0);

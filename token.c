@@ -39,12 +39,12 @@ char **stringToTokens(char *str)
 		exit(1);
 	}
 
-	token = _strtok(str, ' ');
+	token = strtok(str, " ");
 
 	while (token != NULL)
 	{
 		tokens[i] = token;
-		token = _strtok(NULL, ' ');
+		token = strtok(NULL, " ");
 		i++;
 	}
 	tokens[i] = NULL;
